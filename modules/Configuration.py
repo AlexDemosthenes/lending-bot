@@ -1,12 +1,12 @@
 # coding=utf-8
-from ConfigParser import SafeConfigParser
+from configparser import ConfigParser
 import json
 from decimal import Decimal
 
-config = SafeConfigParser()
+config = ConfigParser()
 Data = None
 FULL_LIST = ['STR', 'BTC', 'BTS', 'CLAM', 'DOGE', 'DASH', 'LTC', 'MAID', 'XMR', 'XRP', 'ETH', 'FCT']
-# This module is the middleman between the bot and a SafeConfigParser object, so that we can add extra functionality
+# This module is the middleman between the bot and a ConfigParser object, so that we can add extra functionality
 # without clogging up lendingbot.py with all the config logic. For example, added a default value to get().
 
 
@@ -19,13 +19,12 @@ def init(file_location, data=None):
         # Copy default config file if not found
         try:
             shutil.copy('default.cfg.example', file_location)
-            print '\ndefault.cfg.example has been copied to ' + file_location + '\n' \
-                  'Edit it with your API key and custom settings.\n'
-            raw_input("Press Enter to acknowledge and exit...")
+            print('\ndefault.cfg.example has been copied to ' + file_location + '\n' 
+                  'Edit it with your API key and custom settings.\n')
+            input("Press Enter to acknowledge and exit...")
             exit(1)
         except Exception as ex:
-            ex.message = ex.message if ex.message else str(ex)
-            print("Failed to automatically copy config. Please do so manually. Error: {0}".format(ex.message))
+            print("Failed to automatically copy config. Please do so manually. Error: {0}".format(str(ex)))
             exit(1)
     return config
 
@@ -46,22 +45,22 @@ def get(category, option, default_value=False, lower_limit=False, upper_limit=Fa
         value = config.get(category, option)
         try:
             if lower_limit and float(value) < float(lower_limit):
-                print "ERROR: [%s]-%s's value: '%s' is below the minimum limit: %s" % \
-                      (category, option, value, lower_limit)
+                print("ERROR: [%s]-%s's value: '%s' is below the minimum limit: %s" % 
+                      (category, option, value, lower_limit))
                 exit(1)
             if upper_limit and float(value) > float(upper_limit):
-                print "ERROR: [%s]-%s's value: '%s' is above the maximum limit: %s" % \
-                      (category, option, value, lower_limit)
+                print("ERROR: [%s]-%s's value: '%s' is above the maximum limit: %s" % 
+                      (category, option, value, lower_limit))
                 exit(1)
             return value
         except ValueError:
             if default_value is None:
-                print "ERROR: [%s]-%s is not allowed to be left empty. Please check your config." % (category, option)
+                print("ERROR: [%s]-%s is not allowed to be left empty. Please check your config." % (category, option))
                 exit(1)
             return default_value
     else:
         if default_value is None:
-            print "ERROR: [%s]-%s is not allowed to be left unset. Please check your config." % (category, option)
+            print("ERROR: [%s]-%s is not allowed to be left unset. Please check your config." % (category, option))
             exit(1)
         return default_value
 # Below: functions for returning some config values that require special treatment.
@@ -142,8 +141,8 @@ def get_gap_mode(category, option):
         full_list = ['raw', 'rawbtc', 'relative']
         value = get(category, 'gapmode', False).lower().strip(" ")
         if value not in full_list:
-            print "ERROR: Invalid entry '%s' for [%s]-gapMode. Please check your config. Allowed values are: %s" % \
-                  (value, category, ", ".join(full_list))
+            print("ERROR: Invalid entry '%s' for [%s]-gapMode. Please check your config. Allowed values are: %s" % 
+                  (value, category, ", ".join(full_list)))
             exit(1)
         return value.lower()
     else:

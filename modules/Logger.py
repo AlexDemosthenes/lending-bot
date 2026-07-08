@@ -98,7 +98,7 @@ class Logger(object):
         log_message = self.timestamp() + ' Error: ' + msg
         self.output.printline(log_message)
         if type(self.output) is JsonOutput:
-            print log_message
+            print(log_message)
         self.refreshStatus()
 
     def offer(self, amt, cur, rate, days, msg):

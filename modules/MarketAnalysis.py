@@ -32,8 +32,8 @@ class MarketAnalysis(object):
                 try:
                     self.api.api_query("returnLoanOrders", {'currency': currency, 'limit': '5'})
                 except Exception as cur_ex:
-                    print "Error: You entered an incorrect currency: '" + currency + \
-                          "' to analyse the market of, please check your settings. Error message: " + str(cur_ex)
+                    print("Error: You entered an incorrect currency: '" + currency + 
+                          "' to analyse the market of, please check your settings. Error message: " + str(cur_ex))
                     exit(1)
 
                 else:
