@@ -124,7 +124,7 @@ def notify_new_loans(sleep_time):
                 loans_amount[k] = float(loan['amount']) + (loans_amount[k] if k in loans_amount else 0)
                 loans_info[k] = loan
             # send notifications with the grouped info
-            for k, amount in loans_amount.iteritems():
+            for k, amount in loans_amount.items():
                 loan = loans_info[k]
                 t = "{0} {1} loan filled for {2} days at a rate of {3:.4f}%"
                 text = t.format(amount, loan['currency'], loan['duration'], float(loan['rate']) * 100)
@@ -156,7 +156,7 @@ def create_lend_offer(currency, amt, rate):
         if Config.has_option('BOT', 'endDate'):
             days_remaining = int(Data.get_max_duration(end_date, "order"))
             if int(days_remaining) <= 2:
-                print "endDate reached. Bot can no longer lend.\nExiting..."
+                print("endDate reached. Bot can no longer lend.\nExiting...")
                 log.log("The end date has almost been reached and the bot can no longer lend. Exiting.")
                 log.refreshStatus(Data.stringify_total_lent(*Data.get_total_lent()), Data.get_max_duration(
                     end_date, "status"))
@@ -196,10 +196,9 @@ def cancel_all():
                         msg = api.cancel_loan_offer(CUR, offer['id'])
                         log.cancelOrders(CUR, msg)
                     except Exception as ex:
-                        ex.message = ex.message if ex.message else str(ex)
-                        log.log("Error canceling loan offer: {0}".format(ex.message))
+                        log.log("Error canceling loan offer: {0}".format(str(ex)))
         else:
-            print "Not enough " + CUR + " to lend if bot canceled open orders. Not cancelling."
+            print("Not enough " + CUR + " to lend if bot canceled open orders. Not cancelling.")
 
 
 def lend_all():
@@ -359,12 +358,12 @@ def get_gap_mode_rates(cur, cur_active_bal, cur_total_balance, ticker):
         top_rate = get_gap_rate(cur, gap_top, order_book, cur_total_balance)
     else:
         if use_gap_cfg:
-            print "WARN: Invalid setting for gapMode for [%s], using defaults..." % cur
+            print("WARN: Invalid setting for gapMode for [%s], using defaults..." % cur)
             coin_cfg[cur]['gapmode'] = "rawbtc"
             coin_cfg[cur]['gapbottom'] = 10
             coin_cfg[cur]['gaptop'] = 100
         else:
-            print "WARN: Invalid setting for gapMode, using defaults..."
+            print("WARN: Invalid setting for gapMode, using defaults...")
             gap_mode_default = "relative"
             gap_bottom_default = 10
             gap_top_default = 200
@@ -413,7 +412,7 @@ def lend_cur(active_cur, total_lent, lending_balances, ticker):
         except Exception as msg:
             if "Amount must be at least " in str(msg):
                 import re
-                results = re.findall('[-+]?([0-9]*\.[0-9]+|[0-9]+)', str(msg))
+                results = re.findall(r'[-+]?([0-9]*\.[0-9]+|[0-9]+)', str(msg))
                 for result in results:
                     if result:
                         min_loan_sizes[active_cur] = float(result)
@@ -437,5 +436,5 @@ def transfer_balances():
                 log.log(log.digestApiMsg(msg))
                 log.notify(log.digestApiMsg(msg), notify_conf)
             if coin not in exchange_balances:
-                print "WARN: Incorrect coin entered for transferCurrencies: " + coin
+                print("WARN: Incorrect coin entered for transferCurrencies: " + coin)
                 transferable_currencies.remove(coin)
